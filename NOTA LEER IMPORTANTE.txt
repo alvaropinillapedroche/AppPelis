@@ -1,1 +1,0 @@
-- Implementar: elegir mediante jFilechooser la ubicación del archivo de pelis si no existe el fichero de configuración en la carpeta de documentos del PC propio (pensar cómo hacer para que funcione en todos los pc's usando las variables globales del sistema).
