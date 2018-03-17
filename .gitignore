@@ -22,5 +22,8 @@
 hs_err_pid*
 
 # otros
+/build/
+/dist/
+build.xml
 HACER.txt
 texto*.txt

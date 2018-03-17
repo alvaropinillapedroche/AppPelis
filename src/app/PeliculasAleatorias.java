@@ -17,13 +17,13 @@ public class PeliculasAleatorias extends javax.swing.JFrame {
 
     private int numAleatorio1, numAleatorio2;
     private ArrayList<String> pelis;
-    private ArrayList<Integer> posiciones;
+    private ArrayList<Integer> posiciones; //para mantener la correspondencia de posiciones entre la lista de pelis buscada y el ArrayList con todas
     private String buscar;
     public static String tituloPelicula;
 
     public PeliculasAleatorias() {
         initComponents();
-        pelis = new ArrayList<String>();
+        pelis = new ArrayList<>();
 
         FileReader fr = null;
         try {
@@ -91,7 +91,6 @@ public class PeliculasAleatorias extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         aniadirTF = new javax.swing.JTextField();
         aniadirB = new javax.swing.JButton();
-        anioCB = new javax.swing.JCheckBox();
         jPanel4 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -141,6 +140,7 @@ public class PeliculasAleatorias extends javax.swing.JFrame {
         jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane2.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 
+        pelicula1TA.setEditable(false);
         pelicula1TA.setColumns(20);
         pelicula1TA.setLineWrap(true);
         pelicula1TA.setRows(5);
@@ -150,6 +150,7 @@ public class PeliculasAleatorias extends javax.swing.JFrame {
         jScrollPane3.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane3.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 
+        pelicula2TA.setEditable(false);
         pelicula2TA.setColumns(20);
         pelicula2TA.setLineWrap(true);
         pelicula2TA.setRows(5);
@@ -318,25 +319,16 @@ public class PeliculasAleatorias extends javax.swing.JFrame {
             }
         });
 
-        anioCB.setSelected(true);
-        anioCB.setText("Ordenar por año");
-
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(anioCB)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(aniadirTF, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(aniadirB)
-                        .addGap(136, 136, 136))))
+                .addComponent(aniadirTF, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(aniadirB)
+                .addGap(136, 136, 136))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -345,9 +337,7 @@ public class PeliculasAleatorias extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(aniadirTF, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(aniadirB))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(anioCB, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Leyenda", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 14))); // NOI18N
@@ -356,7 +346,7 @@ public class PeliculasAleatorias extends javax.swing.JFrame {
 
         jLabel5.setText("Signo + : Películas descargadas");
 
-        jLabel6.setText("Al añadir película, el año va al final.");
+        jLabel6.setText("Al añadir película, el año va al final entre paréntesis.");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -408,7 +398,7 @@ public class PeliculasAleatorias extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -478,6 +468,7 @@ public class PeliculasAleatorias extends javax.swing.JFrame {
         posiciones = new ArrayList<>();
 
         DefaultListModel<String> modelo = new DefaultListModel<>();
+        //se transforman las mayus y los caracteres especiales
         String normalizado = Normalizer.normalize(buscar, Normalizer.Form.NFD);
         String textofinal = normalizado.replaceAll("[^\\p{ASCII}]", "");
         textofinal = textofinal.toLowerCase();
@@ -532,12 +523,13 @@ public class PeliculasAleatorias extends javax.swing.JFrame {
     }//GEN-LAST:event_borrarListaActionPerformed
 
     private void aniadirBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aniadirBActionPerformed
-        String texto = aniadirTF.getText().replace(" ", ""); //por si introducen muchos espacios solo
+        String peli = aniadirTF.getText().replace(" ", ""); //por si introducen muchos espacios solo
         int anio;
         int posAniadir;
 
-        if (!texto.equals("")) {
-            if (anioCB.isSelected()) {
+        if (!peli.equals("")) {
+            if (peliTieneAnio(peli)) {
+                System.out.println("tiene año");
                 anio = getAnioPeli(aniadirTF.getText());
                 posAniadir = buscarPosicionAnio(anio);
                 pelis.add(posAniadir, aniadirTF.getText()); //el arrayList mueve los elementos automaticámente para hacer hueco
@@ -559,6 +551,19 @@ public class PeliculasAleatorias extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_aniadirBActionPerformed
 
+    private boolean peliTieneAnio(String peli){
+        boolean valor = false;
+        try{
+            if (peli.length() > 6){ //peli mínima: x(aaaa) son 7 caracteres minimo. Ej: A(2010)
+                getAnioPeli(peli);
+                valor = true;
+            }
+        } catch (NumberFormatException ex){
+            valor = false;
+        }
+        return valor;
+    }
+    
     private void mostrarTodasBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mostrarTodasBActionPerformed
         DefaultListModel<String> modelo = new DefaultListModel<>();
         posiciones = new ArrayList<>();
@@ -596,7 +601,8 @@ public class PeliculasAleatorias extends javax.swing.JFrame {
         }
 
         if (posicion != -1) {
-            pelis.set(posiciones.get(posicion), PeliculasAleatorias.tituloPelicula);
+            pelis.set(posiciones.get(posicion), PeliculasAleatorias.tituloPelicula); //editamos el elemento
+            System.out.println("Se hace");
             try {
                 actualizarFichero();
                 buscarPeli();
@@ -622,26 +628,27 @@ public class PeliculasAleatorias extends javax.swing.JFrame {
     private int buscarPosicionAnio(int anio) {
         int posAniadir = 0;
         try {
+            
             int anioPeliActual = getAnioPeli(pelis.get(0));
             while (anioPeliActual <= anio) {
                 posAniadir++;
                 anioPeliActual = getAnioPeli(pelis.get(posAniadir));
             }
-        } catch (NumberFormatException ex) {
-            /* En cuanto salta la excepción es que ha llegado hasta la primera peli sin año.
+        } catch (NumberFormatException | StringIndexOutOfBoundsException ex) {
+            /* En cuanto salta la excepción es que ha llegado hasta la primera peli sin año (puede ser que sea < de 5 caracteres).
                Entonces ya no hay más pelis con año y la peli que estamos agregando es la de mayor o igual año */
         }
         return posAniadir;
     }
 
-    private int getAnioPeli(String peli) throws NumberFormatException { // obtengo los últimos 4 caracteres
-        return Integer.parseInt(peli.substring(peli.length() - 4, peli.length()));
+    private int getAnioPeli(String peli) throws NumberFormatException, StringIndexOutOfBoundsException {
+        // obtengo los 4 caracteres dentro de los paréntesis
+        return Integer.parseInt(peli.substring(peli.length() - 5, peli.length()-1));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton aniadirB;
     private javax.swing.JTextField aniadirTF;
-    private javax.swing.JCheckBox anioCB;
     private javax.swing.JButton borrarAleatorio;
     private javax.swing.JButton borrarLista;
     private javax.swing.JButton buscarB;
