@@ -25,5 +25,6 @@ hs_err_pid*
 /build/
 /dist/
 build.xml
-HACER.txt
+manifest.mf
+Mejoras.txt
 texto*.txt
