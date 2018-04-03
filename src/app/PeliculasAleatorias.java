@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
@@ -222,7 +223,7 @@ public class PeliculasAleatorias extends javax.swing.JFrame {
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Buscador de Películas", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 14))); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jLabel3.setText("Introduce nombre:");
+        jLabel3.setText("Introduce nombre o año:");
 
         buscarB.setText("Buscar");
         buscarB.addActionListener(new java.awt.event.ActionListener() {
@@ -528,42 +529,86 @@ public class PeliculasAleatorias extends javax.swing.JFrame {
         int posAniadir;
 
         if (!peli.equals("")) {
-            if (peliTieneAnio(peli)) {
-                System.out.println("tiene año");
-                anio = getAnioPeli(aniadirTF.getText());
-                posAniadir = buscarPosicionAnio(anio);
-                pelis.add(posAniadir, aniadirTF.getText()); //el arrayList mueve los elementos automaticámente para hacer hueco
+            if (peliNoRepetida(peli)) {
+                if (peliTieneTitulo(peli)) {
+                    if (peliTieneAnio(peli)) {
+                        anio = getAnioPeli(aniadirTF.getText());
+                        posAniadir = buscarPosicionAnio(anio);
+                        pelis.add(posAniadir, aniadirTF.getText()); //el arrayList mueve los elementos automaticámente para hacer hueco
 
-            } else { //si no tiene año se añade al final
-                pelis.add(aniadirTF.getText());
+                    } else { //si no tiene año se añade al final
+                        pelis.add(aniadirTF.getText());
+                    }
+
+                    try {
+                        actualizarFichero();
+                        JOptionPane.showMessageDialog(null, "La película se ha añadido correctamente", "Correcto", JOptionPane.INFORMATION_MESSAGE);
+                        aniadirTF.setText("");
+
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(null, "Se ha producido un error con el fichero", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Por favor, introduzca el título de la película", "Aviso", JOptionPane.WARNING_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "La película ya está en la lista", "Película duplicada", JOptionPane.WARNING_MESSAGE);
             }
 
-            try {
-                actualizarFichero();
-                JOptionPane.showMessageDialog(null, "La película se ha añadido correctamente", "Correcto", JOptionPane.INFORMATION_MESSAGE);
-                aniadirTF.setText("");
-
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(null, "Se ha producido un error con el fichero", "Error", JOptionPane.ERROR_MESSAGE);
-            }
         } else {
             JOptionPane.showMessageDialog(null, "Introduzca una película", "Aviso", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_aniadirBActionPerformed
 
-    private boolean peliTieneAnio(String peli){
+    private boolean peliNoRepetida(String peli) {
+        boolean repetida = true;
+        
+        //quito el posible año, para dejar sólo el título
+        if (peliTieneAnio(peli)){
+            peli = peli.substring(0, peli.length() - 6);
+            peli = peli.replace(" ", ""); //para eliminar los posibles espacios entre el título y el año
+        }
+            
+        //se transforman las mayus y los caracteres especiales
+        String normalizado = Normalizer.normalize(peli, Normalizer.Form.NFD);
+        String textofinal = normalizado.replaceAll("[^\\p{ASCII}]", "");
+        textofinal = textofinal.toLowerCase();
+
+        for (int i = 0; i < pelis.size(); i++) {
+            String normalizado2 = Normalizer.normalize(pelis.get(i), Normalizer.Form.NFD);
+            String textofinal2 = normalizado2.replaceAll("[^\\p{ASCII}]", "");
+            textofinal2 = textofinal2.toLowerCase();
+
+            if (textofinal2.contains(textofinal)) {
+                repetida = false;
+            }
+        }
+        
+        return repetida;
+    }
+
+    private boolean peliTieneTitulo(String peli) {
+        return !Pattern.matches("\\([0-9]{4}\\)", peli);
+    }
+
+    private int getAnioPeli(String peli) throws NumberFormatException, StringIndexOutOfBoundsException {
+        // obtengo los 4 caracteres dentro de los paréntesis
+        return Integer.parseInt(peli.substring(peli.length() - 5, peli.length() - 1));
+    }
+
+    private boolean peliTieneAnio(String peli) {
         boolean valor = false;
-        try{
-            if (peli.length() > 6){ //peli mínima: x(aaaa) son 7 caracteres minimo. Ej: A(2010)
+        try {
+            if (peli.length() > 6) { //peli mínima: x(aaaa) son 7 caracteres minimo. Ej: A(2010)
                 getAnioPeli(peli);
                 valor = true;
             }
-        } catch (NumberFormatException ex){
+        } catch (NumberFormatException ex) {
             valor = false;
         }
         return valor;
     }
-    
+
     private void mostrarTodasBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mostrarTodasBActionPerformed
         DefaultListModel<String> modelo = new DefaultListModel<>();
         posiciones = new ArrayList<>();
@@ -628,7 +673,7 @@ public class PeliculasAleatorias extends javax.swing.JFrame {
     private int buscarPosicionAnio(int anio) {
         int posAniadir = 0;
         try {
-            
+
             int anioPeliActual = getAnioPeli(pelis.get(0));
             while (anioPeliActual <= anio) {
                 posAniadir++;
@@ -639,11 +684,6 @@ public class PeliculasAleatorias extends javax.swing.JFrame {
                Entonces ya no hay más pelis con año y la peli que estamos agregando es la de mayor o igual año */
         }
         return posAniadir;
-    }
-
-    private int getAnioPeli(String peli) throws NumberFormatException, StringIndexOutOfBoundsException {
-        // obtengo los 4 caracteres dentro de los paréntesis
-        return Integer.parseInt(peli.substring(peli.length() - 5, peli.length()-1));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
