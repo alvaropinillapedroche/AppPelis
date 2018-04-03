@@ -4,18 +4,18 @@ import javax.swing.JOptionPane;
 
 public class EditarPeliculas extends javax.swing.JDialog {
 
-    public EditarPeliculas(java.awt.Dialog parent, boolean modal, String titulo) {
+    public EditarPeliculas(java.awt.Dialog parent, boolean modal, String peli) {
         super(parent, modal);
         initComponents();
-        tituloPeli.setText(titulo);
-        PeliculasAleatorias.tituloPelicula = titulo;
+        tituloPeli.setText(peli);
+        PeliculasAleatorias.peliSeleccionada = peli;
         
-        if(titulo.substring(0, 2).contains("*")){
+        if(peli.substring(0, 2).contains("*")){
             volverAVerCB.setSelected(true);
             volverAVerCB.setEnabled(false);
         }
         
-        else if(titulo.substring(0, 2).contains("+")){
+        else if(peli.substring(0, 2).contains("+")){
             descargadaCB.setSelected(true);
             descargadaCB.setEnabled(false);
         }
@@ -123,17 +123,16 @@ public class EditarPeliculas extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void guardarCambiosBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarCambiosBActionPerformed
-     // listaPeliculas.setModel(new DefaultListModel());
-     String aniadir = "";
-     if(descargadaCB.isEnabled() && descargadaCB.isSelected()){
-         aniadir += "+";
-     }
-     if(volverAVerCB.isEnabled() && volverAVerCB.isSelected()){
-         aniadir += "*";
-     }
-     PeliculasAleatorias.tituloPelicula = aniadir + tituloPeli.getText();
-     JOptionPane.showMessageDialog(null, "La película se ha editado correctamente", "Correcto", JOptionPane.INFORMATION_MESSAGE);
-     this.dispose();
+        String aniadir = "";
+        if (descargadaCB.isEnabled() && descargadaCB.isSelected()) {
+            aniadir += "+";
+        }
+        if (volverAVerCB.isEnabled() && volverAVerCB.isSelected()) {
+            aniadir += "*";
+        }
+        PeliculasAleatorias.peliSeleccionada = aniadir + tituloPeli.getText();
+        JOptionPane.showMessageDialog(null, "La película se ha editado correctamente", "Correcto", JOptionPane.INFORMATION_MESSAGE);
+        this.dispose();
     }//GEN-LAST:event_guardarCambiosBActionPerformed
 
     private void volverAVerCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_volverAVerCBActionPerformed

@@ -20,7 +20,7 @@ public class PeliculasAleatorias extends javax.swing.JFrame {
     private ArrayList<String> pelis;
     private ArrayList<Integer> posiciones; //para mantener la correspondencia de posiciones entre la lista de pelis buscada y el ArrayList con todas
     private String buscar;
-    public static String tituloPelicula;
+    public static String peliSeleccionada;
 
     public PeliculasAleatorias() {
         initComponents();
@@ -562,13 +562,13 @@ public class PeliculasAleatorias extends javax.swing.JFrame {
 
     private boolean peliNoRepetida(String peli) {
         boolean repetida = true;
-        
+
         //quito el posible año, para dejar sólo el título
-        if (peliTieneAnio(peli)){
+        if (peliTieneAnio(peli)) {
             peli = peli.substring(0, peli.length() - 6);
             peli = peli.replace(" ", ""); //para eliminar los posibles espacios entre el título y el año
         }
-            
+
         //se transforman las mayus y los caracteres especiales
         String normalizado = Normalizer.normalize(peli, Normalizer.Form.NFD);
         String textofinal = normalizado.replaceAll("[^\\p{ASCII}]", "");
@@ -583,7 +583,7 @@ public class PeliculasAleatorias extends javax.swing.JFrame {
                 repetida = false;
             }
         }
-        
+
         return repetida;
     }
 
@@ -629,30 +629,31 @@ public class PeliculasAleatorias extends javax.swing.JFrame {
 
     private void editarBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editarBActionPerformed
         int posicion = -1;
+        String peli = "";
 
         if (peliculaEditable()) {
-            String titulo = listaPeliculas.getSelectedValue();
+            peli = listaPeliculas.getSelectedValue();
             posicion = listaPeliculas.getSelectedIndex();
 
-            EditarPeliculas editar = new EditarPeliculas(new javax.swing.JDialog(), true, titulo);
+            EditarPeliculas editar = new EditarPeliculas(new javax.swing.JDialog(), true, peli);
             editar.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
             editar.setTitle("Editar Películas");
             editar.setLocationRelativeTo(null);
             editar.setVisible(true);
-            borrarLista.setEnabled(false);
-            editarB.setEnabled(false);
         } else {
             JOptionPane.showMessageDialog(null, "La película no es editable", "Aviso", JOptionPane.WARNING_MESSAGE);
         }
 
-        if (posicion != -1) {
-            pelis.set(posiciones.get(posicion), PeliculasAleatorias.tituloPelicula); //editamos el elemento
-            System.out.println("Se hace");
+        if (posicion != -1 && !peli.equals(peliSeleccionada)) {
+            pelis.set(posiciones.get(posicion), PeliculasAleatorias.peliSeleccionada); //editamos el elemento
             try {
                 actualizarFichero();
                 buscarPeli();
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(null, "Se ha producido un error con el fichero", "Error", JOptionPane.ERROR_MESSAGE);
+            } finally {
+                borrarLista.setEnabled(false);
+                editarB.setEnabled(false);
             }
         }
     }//GEN-LAST:event_editarBActionPerformed

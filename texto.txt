@@ -1,6 +1,6 @@
-año (2018)
-a(2019)
-﻿ola
-dos
-joer
++año (2018)
+*a(2019)
+*﻿ola
++*dos
++*joer
 y con espacios
